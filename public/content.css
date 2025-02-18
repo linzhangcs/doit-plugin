@@ -1,0 +1,11 @@
+.todo-reminder {
+  position: fixed;
+  z-index: 10000;
+  background-color: rgba(74, 144, 226, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  transition: font-size 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
