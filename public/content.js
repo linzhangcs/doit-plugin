@@ -2,22 +2,23 @@ let reminderElement = null;
 let baseSize = 14;
 let extraSize = 0;
 const REMINDER_SIZE_MULTIPLIER = 3;
-const REMINDER_TEXT = "DO THIS!!! ";
+const REMINDER_TEXT = "are you doing this: ";
 let currentTodoText = "";
 
 function createReminder() {
   if (!reminderElement) {
     reminderElement = document.createElement("div");
     reminderElement.style.position = "fixed";
-    reminderElement.style.top = "50%";
-    reminderElement.style.left = "50%";
-    reminderElement.style.transform = "translate(-50%, -50%)";
+    reminderElement.style.top = "0";
+    reminderElement.style.left = "0";
+    reminderElement.style.transform = "translate(20px, 20px)"; // Offset from cursor
     reminderElement.style.fontSize = `${baseSize}px`;
     reminderElement.style.zIndex = "10000";
     reminderElement.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
     reminderElement.style.padding = "20px";
     reminderElement.style.borderRadius = "10px";
     reminderElement.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
+    reminderElement.style.pointerEvents = "none"; // Make it not interfere with clicking
 
     // Add the static text and a span for the blinking todo
     reminderElement.innerHTML = `${REMINDER_TEXT}<span class="blinking-text">${currentTodoText}</span>`;
@@ -44,16 +45,17 @@ function createReminder() {
   }
 }
 
+// Update reminder position based on cursor
 function updateReminderPosition(e) {
   if (reminderElement) {
-    const x = e ? e.clientX : 0;
-    const y = e ? e.clientY : 0;
-    reminderElement.style.left = `${x + 20}px`;
+    const x = e.clientX;
+    const y = e.clientY;
+    reminderElement.style.left = `${x + 20}px`; // 20px offset from cursor
     reminderElement.style.top = `${y + 20}px`;
-    reminderElement.style.fontSize = `${baseSize + extraSize}px`;
   }
 }
 
+// Add mousemove event listener
 document.addEventListener("mousemove", (e) => {
   updateReminderPosition(e);
   chrome.runtime.sendMessage({ type: "ACTIVITY_DETECTED" });
@@ -65,7 +67,6 @@ chrome.runtime.onMessage.addListener((message) => {
     extraSize = baseSize * (Math.pow(2, message.minutes) - 1);
     if (reminderElement) {
       reminderElement.style.fontSize = `${baseSize + extraSize}px`;
-      // Update just the todo text part while maintaining the blinking
       const todoSpan = reminderElement.querySelector(".blinking-text");
       if (todoSpan) {
         todoSpan.textContent = currentTodoText;
