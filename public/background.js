@@ -67,18 +67,28 @@ async function showReminderInTab(tabId) {
 }
 
 // Function to update all tabs
-async function updateAllTabs() {
-  const tabs = await chrome.tabs.query({
-    url: ["http://*/*", "https://*/*"],
-  });
+// async function updateAllTabs() {
+//   const tabs = await chrome.tabs.query({
+//     url: ["http://*/*", "https://*/*"],
+//   });
 
-  console.log(`Attempting to update ${tabs.length} tabs`);
+//   console.log(`Attempting to update ${tabs.length} tabs`);
 
-  for (const tab of tabs) {
+//   for (const tab of tabs) {
+//     await showReminderInTab(tab.id);
+//   }
+// }
+//get update the currently active tab
+async function updateActiveTab() {
+  const queryOptions = { active: true, lastFocusedWindow: true };
+
+  let [tab] = await chrome.tabs.query(queryOptions);
+  console.log("ACTIVE TAB", tab.id, tab);
+  //either a 'tabs.tab' or 'undefined'
+  if (tab) {
     await showReminderInTab(tab.id);
   }
 }
-
 // Load todo from storage
 async function loadTopTodo() {
   console.log("Loading top todo from storage...");
@@ -92,7 +102,8 @@ async function loadTopTodo() {
     if (todos.length > 0) {
       currentTodo = todos[0];
       console.log("Set currentTodo to:", currentTodo);
-      await updateAllTabs();
+      // await updateAllTabs();
+      await updateActiveTab();
     } else {
       console.log("No todos found in storage");
       currentTodo = null;
@@ -110,7 +121,8 @@ function resetTimer() {
   }
   activityTimer = setInterval(async () => {
     inactiveTime++;
-    await updateAllTabs();
+    // await updateAllTabs();
+    await updateActiveTab();
   }, 1000);
 }
 
