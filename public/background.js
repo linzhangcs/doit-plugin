@@ -3,11 +3,85 @@ console.log("Background script loaded"); // Debug log
 let inactiveTime = 0;
 let activityTimer = null;
 const MINUTES_TO_REMIND = 0;
-let currentTodo = { text: "Add a todo item!" }; // Default message until we load the real todo
+let currentTodo = null;
 
-// Function to get the top todo from storage
+// Function to check if tab is valid
+async function isValidTab(tabId) {
+  try {
+    const tab = await chrome.tabs.get(tabId);
+    return (
+      tab &&
+      tab.url &&
+      (tab.url.startsWith("http://") || tab.url.startsWith("https://"))
+    );
+  } catch (e) {
+    return false;
+  }
+}
+
+// Function to send message to tab
+async function sendMessageToTab(tabId, message) {
+  if (!(await isValidTab(tabId))) {
+    return false;
+  }
+
+  return new Promise((resolve) => {
+    chrome.tabs.sendMessage(tabId, message, (response) => {
+      if (chrome.runtime.lastError) {
+        console.log("Error sending message:", chrome.runtime.lastError);
+        resolve(false);
+      } else {
+        console.log("Message sent successfully:", message);
+        resolve(true);
+      }
+    });
+  });
+}
+
+// Function to show reminder in tab
+async function showReminderInTab(tabId) {
+  if (!currentTodo) {
+    console.log("No todo to show");
+    return false;
+  }
+
+  console.log("Showing todo in tab:", tabId, currentTodo);
+
+  // Try to send the message with retries
+  const maxRetries = 3;
+  for (let i = 0; i < maxRetries; i++) {
+    const success = await sendMessageToTab(tabId, {
+      type: "UPDATE_TOP_TODO",
+      todo: currentTodo,
+    });
+
+    if (success) {
+      return true;
+    }
+
+    // Wait before retrying
+    await new Promise((resolve) => setTimeout(resolve, 500 * (i + 1)));
+  }
+
+  return false;
+}
+
+// Function to update all tabs
+async function updateAllTabs() {
+  const tabs = await chrome.tabs.query({
+    url: ["http://*/*", "https://*/*"],
+  });
+
+  console.log(`Attempting to update ${tabs.length} tabs`);
+
+  for (const tab of tabs) {
+    await showReminderInTab(tab.id);
+  }
+}
+
+// Load todo from storage
 async function loadTopTodo() {
-  console.log("Attempting to load top todo...");
+  console.log("Loading top todo from storage...");
   try {
     const result = await chrome.storage.local.get(["todos"]);
     console.log("Storage result:", result);
@@ -18,53 +92,15 @@ async function loadTopTodo() {
     if (todos.length > 0) {
       currentTodo = todos[0];
       console.log("Set currentTodo to:", currentTodo);
+      await updateAllTabs();
     } else {
       console.log("No todos found in storage");
+      currentTodo = null;
     }
-
-    // Update all tabs with the new todo
-    updateAllTabs();
   } catch (e) {
     console.error("Failed to load todo:", e);
+    currentTodo = null;
   }
-}
-
-// Function to inject and show reminder
-async function injectAndShowReminder(tabId) {
-  console.log("Attempting to send reminder to tab:", tabId);
-  try {
-    await chrome.tabs.sendMessage(tabId, {
-      type: "UPDATE_TOP_TODO",
-      todo: currentTodo,
-    });
-    console.log("Successfully sent todo to tab:", tabId);
-  } catch (e) {
-    console.log("Failed to send message, tab might not have content script");
-  }
-}
-
-// Function to update all tabs
-async function updateAllTabs() {
-  try {
-    const tabs = await chrome.tabs.query({
-      url: ["http://*/*", "https://*/*"],
-    });
-    console.log("Found tabs:", tabs.length);
-    for (const tab of tabs) {
-      injectAndShowReminder(tab.id);
-    }
-  } catch (e) {
-    console.error("Failed to update tabs:", e);
-  }
-}
-
-// Initialize extension and show reminders on all tabs
-async function initializeExtension() {
-  console.log("Initializing extension...");
-  await loadTopTodo();
-  await updateAllTabs();
-  resetTimer();
-  console.log("Extension initialized");
 }
 
 function resetTimer() {
@@ -72,9 +108,9 @@ function resetTimer() {
   if (activityTimer) {
     clearInterval(activityTimer);
   }
-  activityTimer = setInterval(() => {
+  activityTimer = setInterval(async () => {
     inactiveTime++;
-    updateAllTabs();
+    await updateAllTabs();
   }, 1000);
 }
 
@@ -83,39 +119,51 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "ACTIVITY_DETECTED") {
     resetTimer();
   }
+  return true;
 });
 
-// Run initialization when extension loads
-chrome.runtime.onStartup.addListener(initializeExtension);
-chrome.runtime.onInstalled.addListener(initializeExtension);
-
-// Initialize immediately
-initializeExtension();
-
-// Load todo when storage changes
-chrome.storage.onChanged.addListener((changes, namespace) => {
-  if (namespace === "local" && changes.todos) {
-    loadTopTodo();
-  }
-});
-
-// Tab listeners
+// Tab update listener
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (
-    changeInfo.status === "complete" &&
-    tab.url &&
-    tab.url.match(/^https?:\/\//)
-  ) {
-    injectAndShowReminder(tabId);
+  if (changeInfo.status === "complete" && tab.url?.startsWith("http")) {
+    // Give the content script time to load
+    setTimeout(() => showReminderInTab(tabId), 1000);
   }
 });
 
 // Tab activation listener
 chrome.tabs.onActivated.addListener(({ tabId }) => {
-  resetTimer();
   chrome.tabs.get(tabId, (tab) => {
-    if (tab.url && tab.url.match(/^https?:\/\//)) {
-      injectAndShowReminder(tabId);
+    if (tab.url?.startsWith("http")) {
+      resetTimer();
+      setTimeout(() => showReminderInTab(tabId), 1000);
     }
   });
+});
+
+// Storage change listener with immediate update
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  if (namespace === "local" && changes.todos) {
+    console.log("Storage changed. New todos:", changes.todos.newValue);
+    loadTopTodo();
+  }
+});
+
+// Initialize
+async function initialize() {
+  console.log("Initializing extension...");
+  await loadTopTodo();
+  resetTimer();
+  console.log("Extension initialized");
+}
+
+// Initialize on install and startup
+chrome.runtime.onInstalled.addListener(initialize);
+chrome.runtime.onStartup.addListener(initialize);
+
+// Initialize immediately
+initialize();
+
+// Debug: Check storage on load
+chrome.storage.local.get(["todos"], function (result) {
+  console.log("Initial storage state:", result);
 });
