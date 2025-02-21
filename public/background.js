@@ -100,7 +100,7 @@ async function loadTopTodo() {
     console.log("Todos array:", todos);
 
     if (todos.length > 0) {
-      currentTodo = todos[0];
+      currentTodo = todos.filter((todo) => !todo.completed)[0];
       console.log("Set currentTodo to:", currentTodo);
       // await updateAllTabs();
       await updateActiveTab();
