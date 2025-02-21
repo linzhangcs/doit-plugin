@@ -93,7 +93,7 @@ async function updateActiveTab() {
 async function loadTopTodo() {
   console.log("Loading top todo from storage...");
   try {
-    const result = await chrome.storage.local.get(["todos"]);
+    const result = await chrome.storage.sync.get(["todos"]);
     console.log("Storage result:", result);
 
     const todos = result.todos || [];
@@ -122,7 +122,7 @@ function resetTimer() {
   activityTimer = setInterval(async () => {
     inactiveTime++;
     // await updateAllTabs();
-    await updateActiveTab();
+    // await updateActiveTab();
   }, 1000);
 }
 
@@ -154,7 +154,7 @@ chrome.tabs.onActivated.addListener(({ tabId }) => {
 
 // Storage change listener with immediate update
 chrome.storage.onChanged.addListener((changes, namespace) => {
-  if (namespace === "local" && changes.todos) {
+  if (namespace === "sync" && changes.todos) {
     console.log("Storage changed. New todos:", changes.todos.newValue);
     loadTopTodo();
   }
@@ -174,8 +174,3 @@ chrome.runtime.onStartup.addListener(initialize);
 
 // Initialize immediately
 initialize();
-
-// Debug: Check storage on load
-chrome.storage.local.get(["todos"], function (result) {
-  console.log("Initial storage state:", result);
-});
