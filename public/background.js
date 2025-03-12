@@ -129,7 +129,7 @@ function resetTimer() {
 // Message listeners
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "ACTIVITY_DETECTED") {
-    resetTimer();
+    // resetTimer();
   }
   return true;
 });
@@ -138,15 +138,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === "complete" && tab.url?.startsWith("http")) {
     // Give the content script time to load
+    loadTopTodo();
     setTimeout(() => showReminderInTab(tabId), 1000);
   }
 });
 
 // Tab activation listener
 chrome.tabs.onActivated.addListener(({ tabId }) => {
+  console.log("User switched to tab:", tabId);
+
   chrome.tabs.get(tabId, (tab) => {
     if (tab.url?.startsWith("http")) {
-      resetTimer();
+      // resetTimer();
+      console.log("User switched to tab:", tabId);
+      loadTopTodo();
+      // Give the content script time to load
       setTimeout(() => showReminderInTab(tabId), 1000);
     }
   });

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Advanced Todo New Tab",
+  "name": "aggro todo",
   "version": "0.0.1",
-  "description": "A todo list new tab with cursor reminders",
+  "description": "A todo reminders with aggro attitude",
   "permissions": ["storage", "tabs", "alarms"],
   "chrome_url_overrides": {
     "newtab": "index.html"
