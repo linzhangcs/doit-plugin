@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Todo Reminder",
+  "version": "1.0",
+  "permissions": ["tabs", "storage", "activeTab"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle",
+      "all_frames": false,
+      "match_about_blank": false
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
