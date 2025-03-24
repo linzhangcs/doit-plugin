@@ -1,0 +1,43 @@
+section {
+  margin: 4rem 2rem;
+  padding-top: 1rem;
+
+  width: 45%;
+  height: 100%;
+
+  border-radius: 0 5px 5px 5px;
+  background: var(--secondary-color-light);
+}
+
+.sectionTab {
+  padding: 0.5rem;
+  width: fit-content;
+  letter-spacing: 2px;
+
+  color: var(--white);
+  background-color: var(--primary-color-dark);
+  border-radius: 5px 5px 0 0;
+
+  position: relative;
+  top: -3.2rem;
+  left: 0;
+}
+
+.sectionCanvas {
+  margin: 0 1.5rem 1.5rem;
+  padding: 0 1rem 2rem;
+
+  border-radius: 1rem;
+  background-color: #fff;
+
+  > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  h1 {
+    font-weight: 600;
+    font-size: 1.5rem;
+  }
+}

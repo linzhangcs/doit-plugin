@@ -1,0 +1,17 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  > img {
+    align-self: flex-end;
+    position: relative;
+    top: 1rem;
+    right: 0;
+    width: 100%;
+  }
+
+  > h1 {
+    margin: 0;
+  }
+}

@@ -1,0 +1,50 @@
+:root {
+  /* Color Palette */
+  --primary-color: #bccbff; /* Blue */
+  --secondary-color: #fdfd7e; /* Yellow */
+  --accent-color: #f0e3ff; /* Purple */
+
+  --primary-color-light: #c9d5ff;
+  --primary-color-lighter: #f5f7ff;
+  --primary-color-dark: #8fa4f0;
+  --primary-color-darker: #5358f6;
+
+  --secondary-color-light: #f6f6c7;
+  --secondary-color-dark: #b3b31d;
+
+  --accent-color-dark: #b276ff;
+
+  /* Neutral Colors */
+  --white: #f5f7ff;
+  --black: #1b0903;
+  --grey-light: #b0b0b0;
+  --grey-dark: #4d4d4d;
+
+  /* Additional Colors */
+  --success-color: #89c70d; /* Green */
+  --danger-color: #ec36a6; /* Red */
+  --warning-color: #d9df1d; /* Yellow */
+
+  --border-color: #b3b3b3;
+
+  /* File Folder */
+  --folder: var(--primary-color);
+  --folder-border: var(--border-color);
+
+  /* Daily & Week Tab */
+  --todo-bg: var(--secondary-color-light);
+  --todo-border: var(--gray-dark);
+  --todo-item-divider: var(--gray-light);
+  --todo-item-selected: var(--secondary-color);
+  --add-todo-btn: var(--secondary-color-dark);
+
+  --section-bg: var(--white);
+  --section-border: var(--gray-light);
+  --section-tab: var(--secondary-color);
+
+  --divider: var(--gray-dark);
+  --tracker-count: var(--secondary-color);
+
+  --font-stack: "Space Mono", -apple-system, Roboto, Oxygen, Ubuntu, Cantarell,
+    "Open Sans", "Helvetica Neue", sans-serif;
+}
