@@ -1,0 +1,39 @@
+.tracker {
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  margin-bottom: 12px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+
+  &.completed {
+    text-decoration: line-through;
+    color: #999;
+  }
+
+  .taskImage {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+  }
+
+  .checkmark {
+    margin-left: 8px;
+    color: green;
+  }
+}
