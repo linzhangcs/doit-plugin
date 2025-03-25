@@ -9,13 +9,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.0.15",
+    "classnames": "^2.5.1",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-icons": "^5.5.0"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.15",
     "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
     "sass": "^1.70.0",
+    "tailwindcss": "^4.0.15",
     "vite": "^5.0.8"
   }
 }
