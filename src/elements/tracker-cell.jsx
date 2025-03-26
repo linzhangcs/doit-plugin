@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import styles from "../styles/elements/tracker-cell.module.scss";
+import styles from "../styles/elements/cell.module.scss";
 
 export const TrackerCell = ({ icon = null, checked, changeHandler, index }) => {
   return (

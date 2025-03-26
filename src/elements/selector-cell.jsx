@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import styles from "../styles/elements/selector-cell.module.scss";
+import styles from "../styles/elements/cell.module.scss";
 
 export const SelectorCell = ({
   icon = null,
