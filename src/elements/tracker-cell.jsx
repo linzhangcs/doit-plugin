@@ -10,9 +10,25 @@ export const TrackerCell = ({ icon = null, checked, changeHandler, index }) => {
           type="checkbox"
           checked={checked}
           onChange={() => changeHandler(index)}
-          //   className={classNames({ [styles.hidden]: icon })}
+          className={styles.hidden}
         />
-        {icon ? <span>{icon}</span> : <span className={styles.checked}> </span>}
+        {icon ? (
+          //span with icon passed in styled as icon
+          <span
+            className={classNames(styles.icon, {
+              [styles.checkedIcon]: checked,
+            })}
+          >
+            {icon}
+          </span>
+        ) : (
+          //span without icon passed in styled as cell
+          <span
+            className={classNames(styles.cell, {
+              [styles.checked]: checked,
+            })}
+          ></span>
+        )}
       </label>
     </>
   );

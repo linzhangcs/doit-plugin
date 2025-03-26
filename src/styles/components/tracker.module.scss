@@ -1,0 +1,60 @@
+.tracker {
+  margin: 1rem 0;
+  padding: 16px;
+
+  border: 1px dashed var(--grey-light);
+  border-left: none;
+  border-right: none;
+
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  + .tracker {
+    border-top: none;
+  }
+
+  span {
+    flex-shrink: 0;
+    flex-basis: 20%;
+  }
+}
+
+.cells {
+  flex: 1;
+  display: flex;
+  margin: 0 1rem 0 2rem;
+  justify-content: space-between;
+}
+// h2 {
+//   margin-bottom: ;
+// }
+
+// ul {
+//   list-style: none;
+//   padding: 0;
+// }
+
+// li {
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   padding: 8px;
+//   border-bottom: 1px solid #ddd;
+
+//   &.completed {
+//     text-decoration: line-through;
+//     color: #999;
+//   }
+
+//   .taskImage {
+//     width: 24px;
+//     height: 24px;
+//     margin-right: 8px;
+//   }
+
+//   .checkmark {
+//     margin-left: 8px;
+//     color: green;
+//   }
+// }

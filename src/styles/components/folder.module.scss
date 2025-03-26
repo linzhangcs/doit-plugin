@@ -21,15 +21,16 @@
 
 .tab {
   height: 20%;
-  padding: 1rem;
+  padding: 0.5rem 0.8rem;
 
   background-color: var(--primary-color);
   color: var(--black);
   border: 1px solid var(--black);
+  border-left: none;
   border-radius: 0 5px 5px 0;
 
   position: relative;
-  right: -3.3rem;
+  right: -2.9rem;
   top: -1px;
 
   display: flex;
